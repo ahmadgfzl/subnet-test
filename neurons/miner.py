@@ -126,10 +126,12 @@ class Miner(BaseMinerNeuron):
             return False, "Hotkey recognized!"
     
     async def blacklist_text(self, synapse: NATextSynapse) -> Tuple[bool, str]:
-        return await self.blacklist(synapse)
+        # CORRECTED: Removed 'await' from the call to the synchronous 'blacklist' function.
+        return self.blacklist(synapse)
     
     async def blacklist_image(self, synapse: NAImageSynapse) -> Tuple[bool, str]:
-        return await self.blacklist(synapse)
+        # CORRECTED: Removed 'await' from the call to the synchronous 'blacklist' function.
+        return self.blacklist(synapse)
 
     async def forward_status(self, synapse: NAStatus) -> NAStatus:
         bt.logging.info(f"Current Miner Status: {self.miner_status}, {self.generation_requests}")
@@ -151,7 +153,8 @@ class Miner(BaseMinerNeuron):
     async def blacklist_status(self, synapse: NAStatus) -> Tuple[bool, str]:
         return False, "All passed!"
     
-    async def priority(self, synapse: NATextSynapse) -> float:
+    # CORRECTED: Changed from 'async def' to 'def' to match the expected synchronous signature.
+    def priority(self, synapse: NATextSynapse) -> float:
         """
         The priority function determines the order in which requests are handled. More valuable or higher-priority
         requests are processed before others. You should design your own priority mechanism with care.
@@ -163,13 +166,6 @@ class Miner(BaseMinerNeuron):
 
         Returns:
             float: A priority score derived from the stake of the calling entity.
-
-        Miners may receive messages from multiple entities at once. This function determines which request should be
-        processed first. Higher values indicate that the request should be processed first. Lower values indicate
-        that the request should be processed later.
-
-        Example priority logic:
-        - A higher stake results in a higher priority value.
         """
         if synapse.dendrite is None or synapse.dendrite.hotkey is None:
             bt.logging.warning("Received a request without a dendrite or hotkey.")
