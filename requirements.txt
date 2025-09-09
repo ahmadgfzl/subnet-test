@@ -8,7 +8,7 @@ rich==13.7.1
 pytest==8.3.2
 setuptools==70.3.0
 python-dotenv==1.0.1
-torch==2.4.0
+torch==2.8.0
 numpy==2.0.0
 SciPy==1.14.0
 async-substrate-interface==1.0.5
