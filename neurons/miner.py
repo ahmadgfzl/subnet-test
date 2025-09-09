@@ -71,23 +71,12 @@ class Miner(BaseMinerNeuron):
     ) -> NAImageSynapse:
         """
         For the synapse from the end users to validators
-        
-        Processes the incoming 'NAImageSynapse' synapse by performing a predefined operation on the input data.
-        This method should be replaced with actual logic relevant to the miner's purpose.
-
-        Args:
-            synapse (maximizeai.protocol.NAImageSynapse): The synapse object containing the 'NAImageSynapse_input' data.
-
-        Returns:
-            maximizeai.protocol.NAImageSynapse: The synapse object with the 'NAImageSynapse_output' field set to twice the 'NATextSynapse_input' value.
-
-        The 'forward' function is a placeholder and should be overridden with logic that is appropriate for
-        the miner's intended operation. This method demonstrates a basic transformation of input data.
         """
         # TODO(developer): Replace with actual implementation logic.
         return synapse
 
-    def blacklist(self, synapse: bt.Synapse) -> tuple[bool, str]:
+    # CORRECTED: Changed to 'async def' for consistency with specialized blacklist functions.
+    async def blacklist(self, synapse: bt.Synapse) -> tuple[bool, str]:
         try:
             if not hasattr(synapse, 'dendrite') or synapse.dendrite is None or not hasattr(synapse.dendrite, 'hotkey') or synapse.dendrite.hotkey is None:
                 bt.logging.warning("Received a request without a dendrite or hotkey.")
@@ -112,12 +101,6 @@ class Miner(BaseMinerNeuron):
                     )
                     return True, "Non-validator hotkey"
 
-            # if check_validator(self, uid=uid, interval=int(self.config.miner.gen_interval)):
-            #     bt.logging.warning(
-            #         f"Too many requests from {synapse.dendrite.hotkey}"
-            #     )
-            #     return True, "Non-validator hotkey"
-
             bt.logging.trace(
                 f"Not Blacklisting recognized hotkey {synapse.dendrite.hotkey}"
             )
@@ -126,12 +109,12 @@ class Miner(BaseMinerNeuron):
             return False, "Hotkey recognized!"
     
     async def blacklist_text(self, synapse: NATextSynapse) -> Tuple[bool, str]:
-        # CORRECTED: Removed 'await' from the call to the synchronous 'blacklist' function.
-        return self.blacklist(synapse)
+        # This 'await' is now correct because blacklist() is async.
+        return await self.blacklist(synapse)
     
     async def blacklist_image(self, synapse: NAImageSynapse) -> Tuple[bool, str]:
-        # CORRECTED: Removed 'await' from the call to the synchronous 'blacklist' function.
-        return self.blacklist(synapse)
+        # This 'await' is now correct because blacklist() is async.
+        return await self.blacklist(synapse)
 
     async def forward_status(self, synapse: NAStatus) -> NAStatus:
         bt.logging.info(f"Current Miner Status: {self.miner_status}, {self.generation_requests}")
@@ -153,31 +136,22 @@ class Miner(BaseMinerNeuron):
     async def blacklist_status(self, synapse: NAStatus) -> Tuple[bool, str]:
         return False, "All passed!"
     
-    # CORRECTED: Changed from 'async def' to 'def' to match the expected synchronous signature.
+    # CORRECTED: The priority function must be synchronous ('def').
     def priority(self, synapse: NATextSynapse) -> float:
         """
         The priority function determines the order in which requests are handled. More valuable or higher-priority
         requests are processed before others. You should design your own priority mechanism with care.
-
-        This implementation assigns priority to incoming requests based on the calling entity's stake in the metagraph.
-
-        Args:
-            synapse (template.protocol.NATextSynapse): The synapse object that contains metadata about the incoming request.
-
-        Returns:
-            float: A priority score derived from the stake of the calling entity.
         """
         if synapse.dendrite is None or synapse.dendrite.hotkey is None:
             bt.logging.warning("Received a request without a dendrite or hotkey.")
             return 0.0
         
-        # TODO(developer): Define how miners should prioritize requests.
         caller_uid = self.metagraph.hotkeys.index(
             synapse.dendrite.hotkey
-        )  # Get the caller index.
+        )
         priority = float(
             self.metagraph.S[caller_uid]
-        )  # Return the stake as the priority.
+        )
         bt.logging.trace(
             f"Prioritizing {synapse.dendrite.hotkey} with value: {priority}"
         )
