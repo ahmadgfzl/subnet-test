@@ -21,6 +21,23 @@ class Miner(BaseMinerNeuron):
         
         set_status(self, self.config.miner.status)
 
+    async def forward(self, synapse):
+        """
+        Generic forward method required by BaseMinerNeuron.
+        This should route to the correct specialized forward method based on synapse type.
+        """
+        bt.logging.info(f"Received synapse of type: {type(synapse)}")
+        # Example routing logic, you can customize this:
+        if isinstance(synapse, NATextSynapse):
+            return await self.forward_text(synapse)
+        elif isinstance(synapse, NAImageSynapse):
+            return await self.forward_image(synapse)
+        elif isinstance(synapse, NAStatus):
+            return await self.forward_status(synapse)
+        else:
+            bt.logging.warning(f"Unknown synapse type: {type(synapse)}")
+            return synapse
+
     async def forward_text(
         self, synapse: NATextSynapse
     ) -> NATextSynapse:
