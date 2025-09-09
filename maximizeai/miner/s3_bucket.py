@@ -8,7 +8,7 @@ load_dotenv()
 ACCESS_KEY = os.getenv('AWS_ACCESS_KEY_ID')
 SECRET_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 REGION_NAME = os.getenv('AWS_REGION')
-BUCKET_NAME = 'neural-ai'
+BUCKET_NAME = 'maximizei-ai'
 
 def s3_upload(file_name, object_name=None):
     if object_name is None:

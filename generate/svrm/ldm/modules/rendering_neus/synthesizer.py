@@ -192,7 +192,7 @@ class TriplaneSynthesizer(nn.Module):
         normal_samples = (normal_samples + 1.0) / 2.0   # for visualization
         normal_samples = torch.lerp(torch.zeros_like(normal_samples), normal_samples, weights_samples)
 
-        # Reshape into 'raw' neural-rendered image
+        # Reshape into 'raw' maximizei-rendered image
         Himg = Wimg = render_size
         rgb_images = rgb_samples.permute(0, 2, 1).reshape(N, rgb_samples.shape[-1], Himg, Wimg).contiguous()
         depth_images = depth_samples.permute(0, 2, 1).reshape(N, 1, Himg, Wimg)

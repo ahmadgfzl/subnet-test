@@ -3,10 +3,10 @@
 # Initialize variables
 script="neurons/validator.py"
 autoRunLoc=$(readlink -f "$0")
-proc_name="neural_validator"
-vali_name="neural_v_endpoint"
+proc_name="maximizei_validator"
+vali_name="maximizei_v_endpoint"
 args=()
-version_location="./neuralai/__init__.py"
+version_location="./maximizeiai/__init__.py"
 version="__version__"
 
 old_args=$@
@@ -262,7 +262,7 @@ if [ "$?" -eq 1 ]; then
         if [ -d "./.git" ]; then
 
             # check value on github remotely
-            latest_version=$(check_variable_value_on_github "GoNeuralAI/neural-subnet" "neuralai/__init__.py" "__version__ " "$branch")
+            latest_version=$(check_variable_value_on_github "GomaximizeiAI/maximizei-subnet" "maximizeiai/__init__.py" "__version__ " "$branch")
 
             # If the file has been updated
             if version_less_than $current_version $latest_version; then
@@ -281,7 +281,7 @@ if [ "$?" -eq 1 ]; then
 
                     # # Run the Python script with the arguments using pm2
                     # TODO (shib): Remove this pm2 del in the next spec version update.
-                    # pm2 del neural_validator_autoupdate
+                    # pm2 del maximizei_validator_autoupdate
                     echo "Restarting PM2 process"
                     pm2 restart $proc_name
                     

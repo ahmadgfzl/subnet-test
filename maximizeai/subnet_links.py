@@ -67,7 +67,7 @@ SUBNET_LINKS = [
     },
     {
         "name": "sn27",
-        "url": "https://github.com/neuralinternet/compute-subnet/",
+        "url": "https://github.com/maximizeiinternet/compute-subnet/",
     },
     {"name": "sn28", "url": "https://github.com/foundryservices/snpOracle/"},
     {"name": "sn29", "url": "https://github.com/fractal-net/fractal/"},
