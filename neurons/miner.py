@@ -75,8 +75,8 @@ class Miner(BaseMinerNeuron):
         # TODO(developer): Replace with actual implementation logic.
         return synapse
 
-    # CORRECTED: Changed to 'async def' for consistency with specialized blacklist functions.
-    async def blacklist(self, synapse: bt.Synapse) -> tuple[bool, str]:
+    # Keep the generic blacklist function synchronous.
+    def blacklist(self, synapse: bt.Synapse) -> tuple[bool, str]:
         try:
             if not hasattr(synapse, 'dendrite') or synapse.dendrite is None or not hasattr(synapse.dendrite, 'hotkey') or synapse.dendrite.hotkey is None:
                 bt.logging.warning("Received a request without a dendrite or hotkey.")
@@ -87,14 +87,12 @@ class Miner(BaseMinerNeuron):
                 not self.config.blacklist.allow_non_registered
                 and synapse.dendrite.hotkey not in self.metagraph.hotkeys
             ):
-                # Ignore requests from un-registered entities.
                 bt.logging.warning(
                     f"Blacklisting un-registered hotkey {synapse.dendrite.hotkey}"
                 )
                 return True, "Unrecognized hotkey"
 
             if self.config.blacklist.force_validator_permit:
-                # If the config is set to force validator permit, then we should only allow requests from validators.
                 if not self.metagraph.validator_permit[uid]:
                     bt.logging.warning(
                         f"Blacklisting a request from non-validator hotkey {synapse.dendrite.hotkey}"
@@ -108,13 +106,13 @@ class Miner(BaseMinerNeuron):
         except Exception as e:
             return False, "Hotkey recognized!"
     
-    async def blacklist_text(self, synapse: NATextSynapse) -> Tuple[bool, str]:
-        # This 'await' is now correct because blacklist() is async.
-        return await self.blacklist(synapse)
+    # CORRECTED: Changed to 'def' to be consistent with the generic blacklist function.
+    def blacklist_text(self, synapse: NATextSynapse) -> Tuple[bool, str]:
+        return self.blacklist(synapse)
     
-    async def blacklist_image(self, synapse: NAImageSynapse) -> Tuple[bool, str]:
-        # This 'await' is now correct because blacklist() is async.
-        return await self.blacklist(synapse)
+    # CORRECTED: Changed to 'def' to be consistent with the generic blacklist function.
+    def blacklist_image(self, synapse: NAImageSynapse) -> Tuple[bool, str]:
+        return self.blacklist(synapse)
 
     async def forward_status(self, synapse: NAStatus) -> NAStatus:
         bt.logging.info(f"Current Miner Status: {self.miner_status}, {self.generation_requests}")
@@ -133,14 +131,13 @@ class Miner(BaseMinerNeuron):
             
         return synapse
     
-    async def blacklist_status(self, synapse: NAStatus) -> Tuple[bool, str]:
+    def blacklist_status(self, synapse: NAStatus) -> Tuple[bool, str]:
         return False, "All passed!"
     
-    # CORRECTED: The priority function must be synchronous ('def').
+    # The priority function must remain synchronous ('def').
     def priority(self, synapse: NATextSynapse) -> float:
         """
-        The priority function determines the order in which requests are handled. More valuable or higher-priority
-        requests are processed before others. You should design your own priority mechanism with care.
+        The priority function determines the order in which requests are handled.
         """
         if synapse.dendrite is None or synapse.dendrite.hotkey is None:
             bt.logging.warning("Received a request without a dendrite or hotkey.")
