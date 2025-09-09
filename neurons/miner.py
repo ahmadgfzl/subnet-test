@@ -87,9 +87,9 @@ class Miner(BaseMinerNeuron):
         # TODO(developer): Replace with actual implementation logic.
         return synapse
 
-    async def blacklist(self, synapse: NATextSynapse) -> Tuple[bool, str]:
+    async def blacklist(self, synapse: bt.Synapse) -> tuple[bool, str]:
         try:
-            if synapse.dendrite is None or synapse.dendrite.hotkey is None:
+            if not hasattr(synapse, 'dendrite') or synapse.dendrite is None or not hasattr(synapse.dendrite, 'hotkey') or synapse.dendrite.hotkey is None:
                 bt.logging.warning("Received a request without a dendrite or hotkey.")
                 return True, "Missing dendrite or hotkey"
 
