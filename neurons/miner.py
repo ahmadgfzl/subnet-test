@@ -44,21 +44,18 @@ class Miner(BaseMinerNeuron):
     ) -> NATextSynapse:
         # TODO(developer): Replace with actual implementation logic.
         uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
+        
+        if not check_status(self):
+            bt.logging.warning("Couldn't perform the Generation right now.")
+            return synapse
+        self.generation_requests += 1
+        
         bt.logging.info(f"====== Received a task. Validator uid : {uid}, hotkey : {synapse.dendrite.hotkey} ======")
         bt.logging.info(f"== {synapse.prompt_text} ==")
         
         set_status(self, "generation")
         # Send gpu id as a parameter for multi gpu
         start = time.time()
-
-    def blacklist_text(self, synapse: NATextSynapse) -> tuple[bool, str]:
-        return self.blacklist(synapse)
-
-    def blacklist_image(self, synapse: NAImageSynapse) -> tuple[bool, str]:
-        return self.blacklist(synapse)
-
-    def blacklist_status(self, synapse: NAStatus) -> tuple[bool, str]:
-        return False, "All passed!"
         synapse = await generate(self, synapse)
         
         self.generation_requests -= 1
