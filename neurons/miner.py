@@ -9,6 +9,7 @@ from maximizeai.base.miner import BaseMinerNeuron
 from maximizeai.protocol import NATextSynapse, NAImageSynapse, NAStatus
 from maximizeai.miner.utils import set_status, check_status, generate, check_validator
 
+
 class Miner(BaseMinerNeuron):
     
     def __init__(self, config=None):
@@ -21,7 +22,7 @@ class Miner(BaseMinerNeuron):
         
         set_status(self, self.config.miner.status)
 
-    async def forward(self, synapse):
+    async def forward(self, synapse: bt.Synapse) -> bt.Synapse:
         """
         Generic forward method required by BaseMinerNeuron.
         This should route to the correct specialized forward method based on synapse type.
