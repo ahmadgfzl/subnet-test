@@ -1,5 +1,5 @@
 # The MIT License (MIT)
-# Copyright © 2024 NeuralAI
+# Copyright © 2024 maximizeai
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 # documentation files (the “Software”), to deal in the Software without restriction, including without limitation
@@ -53,7 +53,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 # loading version from setup.py
 with codecs.open(
-    os.path.join(here, "neuralai/__init__.py"), encoding="utf-8"
+    os.path.join(here, "maximizeai/__init__.py"), encoding="utf-8"
 ) as init_file:
     version_match = re.search(
         r"^__version__ = ['\"]([^'\"]*)['\"]", init_file.read(), re.M
@@ -61,13 +61,13 @@ with codecs.open(
     version_string = version_match.group(1)
 
 setup(
-    name="NeuralAI",
+    name="maximizeai",
     version=version_string,
-    description="NeuralAI 3D generation",
+    description="maximizeai 3D generation",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/GoNeuralAI/neural-subnet",
-    author="https://goneural.ai/",  
+    url="https://github.com/maximizeai-dev/maximizeai-subnet",
+    author="https://maximizeai.org/",  
     packages=find_packages(),
     include_package_data=True,
     author_email="",
